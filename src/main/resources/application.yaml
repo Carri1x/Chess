@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: chess
+
+  datasource:
+    url: jdbc:postresql://localhost:5432/chess
+    username: postgres
+    password: passwordPortfolio
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
