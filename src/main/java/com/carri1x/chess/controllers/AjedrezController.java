@@ -31,7 +31,7 @@ public class AjedrezController {
         return ResponseEntity.ok(new Response(true, 201, "Partida creada, esperando al oponente"));
     }
 
-    @PostMapping("join")
+    @PostMapping("/join")
     public ResponseEntity<Response> unirse(@RequestBody CrearPartidaRequest crearPartidaRequest) {
         Partida partida = null;
         try {
