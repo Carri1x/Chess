@@ -19,7 +19,6 @@ public class Jugador {
     @NotNull
     @Column(nullable = false)
     private Colores color;
-    private UUID cookie;
 
     protected Jugador () {}
 
@@ -42,11 +41,5 @@ public class Jugador {
     }
     public void     setColor(Colores color) {
         this.color = color;
-    }
-    public UUID     getCookie() {
-        return cookie;
-    }
-    public void     setCookie(UUID cookie) {
-        this.cookie = cookie;
     }
 }

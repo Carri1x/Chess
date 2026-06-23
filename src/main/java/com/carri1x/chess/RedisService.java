@@ -24,7 +24,7 @@ public class RedisService {
         }
     }
 
-    public <T> Optional<T> getById(String key, Class<T> claseDestino) {
+    public <T> Optional<T> getByKey(String key, Class<T> claseDestino) {
         try {
             String json = redisTemplate.opsForValue().get(key);
             if (json == null) {

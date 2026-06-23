@@ -7,7 +7,9 @@ import com.carri1x.chess.objetos.Partida;
 import com.carri1x.chess.requests.AjedrezRequest;
 import com.carri1x.chess.requests.ConvertirRequest;
 import com.carri1x.chess.requests.CrearPartidaRequest;
-import com.carri1x.chess.responses.AjedrezResponse;
+import com.carri1x.chess.responses.PartidaResponse;
+import com.carri1x.chess.responses.Response;
+import com.carri1x.chess.responses.TableroResponse;
 import com.carri1x.chess.services.PartidaService;
 
 import java.util.UUID;
@@ -24,37 +26,47 @@ public class AjedrezController {
     PartidaService partidaService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> crear(@RequestBody CrearPartidaRequest crearPartidaRequest) {
-        Partida partida = partidaService.crearPartida(crearPartidaRequest);
+    public ResponseEntity<Response> crear(@RequestBody CrearPartidaRequest crearPartidaRequest) {
+        partidaService.crearPartida(crearPartidaRequest);
+        return ResponseEntity.ok(new Response(true, 201, "Partida creada, esperando al oponente"));
+    }
 
-        return ResponseEntity.ok(true);
+    @PostMapping("join")
+    public ResponseEntity<Response> unirse(@RequestBody CrearPartidaRequest crearPartidaRequest) {
+        Partida partida = null;
+        try {
+            partida = partidaService.unirsePartida(crearPartidaRequest);
+        } catch (AjedrezException e) {
+            return ResponseEntity.ok(new Response(false, 400, e.getMessage()));
+        }
+        return ResponseEntity.ok(new PartidaResponse(true, 200, "Unido a la partida correctamente", partida));
     }
 
     @PostMapping("/movimiento/{idJugador}")
-    public ResponseEntity<AjedrezResponse> mover(
+    public ResponseEntity<Response> mover(
             @RequestBody AjedrezRequest ajedrezRequest,
             @PathVariable UUID idJugador) {
 
         try {
             Partida partida = partidaService.ejecutarMovimiento(idJugador, ajedrezRequest);
-            return ResponseEntity.ok(new AjedrezResponse(true, 200, "Movimiento ejecutado correctamente", partida.getTablero(), partida.getEstadoJuego()));
+            return ResponseEntity.ok(new TableroResponse(true, 200, "Movimiento ejecutado correctamente", partida.getTablero(), partida.getEstadoJuego()));
         } catch (ConvertirPiezaException ex) {
-            return ResponseEntity.ok(new AjedrezResponse(true, 200, ex.getMessage(), ex.getTablero(), EstadoJuego.EN_JUEGO, true));
+            return ResponseEntity.ok(new TableroResponse(true, 200, ex.getMessage(), ex.getTablero()));
         } catch (AjedrezException ex) {
-            return ResponseEntity.ok(new AjedrezResponse(false, 400, ex.getMessage()));
+            return ResponseEntity.ok(new Response(false, 400, ex.getMessage()));
         }
     }
 
     @PostMapping("/convertir/{idJugador}")
-    public ResponseEntity<AjedrezResponse> convertirFicha(
+    public ResponseEntity<Response> convertirFicha(
             @RequestBody ConvertirRequest convertirRequest,
             @PathVariable UUID idJugador) {
 
         try {
             Partida partida = partidaService.ejecutarConversion(idJugador, convertirRequest);
-            return ResponseEntity.ok(new AjedrezResponse(true, 200, "Pieza convertida correctamente", partida.getTablero(), partida.getEstadoJuego(), true));
+            return ResponseEntity.ok(new TableroResponse(true, 200, "Pieza convertida correctamente", partida.getTablero()));
         } catch (AjedrezException ex) {
-            return ResponseEntity.ok(new AjedrezResponse(false, 400, ex.getMessage()));
+            return ResponseEntity.ok(new Response(false, 400, ex.getMessage()));
         }
     }
 }

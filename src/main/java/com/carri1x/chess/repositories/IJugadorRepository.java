@@ -8,6 +8,5 @@ import java.util.UUID;
 
 public interface IJugadorRepository extends JpaRepository<Jugador, UUID> {
     public Optional<Jugador> getJugadorById (UUID idJugador);
-    public Optional<Jugador> getJugadorByCookie (UUID cookie);
     public Optional<Jugador> getJugadorByNombre (String nombre);
 }

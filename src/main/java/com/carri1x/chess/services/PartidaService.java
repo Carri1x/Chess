@@ -14,6 +14,7 @@ import com.carri1x.chess.repositories.IPartidaRepository;
 import com.carri1x.chess.requests.AjedrezRequest;
 import com.carri1x.chess.requests.ConvertirRequest;
 import com.carri1x.chess.requests.CrearPartidaRequest;
+import org.springframework.aop.aspectj.AspectJAdviceParameterNameDiscoverer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,25 +31,34 @@ public class PartidaService {
     @Autowired
     RedisService redisService;
 
-    public Partida crearPartida(CrearPartidaRequest crearPartidaRequest) {
+    public void crearPartida(CrearPartidaRequest crearPartidaRequest) {
         String nombre = crearPartidaRequest.getNombre();
         String codigoEntrada = crearPartidaRequest.getCodigoEntrada();
         UUID cookie = crearPartidaRequest.getCookie();
-        Jugador jugador;
-        Optional<Jugador> jugadorOptional;
+        Jugador jugador = jugadorService.buscarOCrearJugador(cookie, nombre);
 
-        if(cookie != null) {
-            jugadorOptional = jugadorService.getJugadorByCookie(cookie);
-            jugador = jugadorOptional.orElseGet(
-                    () -> jugadorService.save(new Jugador(nombre, Colores.BLANCO))
-            );
+        // Guardamos el código/contraseña de la partida asociado al jugador que está esperando la nueva partida.
+        redisService.save(codigoEntrada, jugador);
+    }
+
+    public Partida unirsePartida(CrearPartidaRequest crearPartidaRequest) throws AjedrezException {
+        String nombre = crearPartidaRequest.getNombre();
+        String codigoEntrada = crearPartidaRequest.getCodigoEntrada();
+        UUID cookie = crearPartidaRequest.getCookie();
+        Jugador jugador = jugadorService.buscarOCrearJugador(cookie, nombre);
+
+        // Aquí cogemos el jugador gracias al código de la entrada y creamos la partida. Si no existiera con ese código lanzamos la excepción.
+        Jugador creador = redisService.getByKey(codigoEntrada, Jugador.class).orElseThrow(
+                () -> new AjedrezException("No hay ninguna partida creada con este código: "+codigoEntrada)
+        );
+
+        // Si coinciden los colores dejamos que el color del creador sean las blancas.
+        if(jugador.getColor() == creador.getColor()) {
+            creador.setColor(Colores.BLANCO);
+            jugador.setColor(Colores.NEGRO);
         }
 
-        // Guardamos el código/contraseña de la partida.
-        redisService.save("codigoEntrada:"+codigoEntrada, //NO SE QUE HACER AQUÍ PARA GUARDA INFO DE LO QUE SE DEBE HACER...);
-
-
-        return null;
+        return new Partida(creador, jugador);
     }
 
     public Partida ejecutarMovimiento(UUID idJugador, AjedrezRequest request) throws AjedrezException {
@@ -170,6 +180,6 @@ public class PartidaService {
 
     public Optional<Partida> getPartidaRedisById(UUID partidaId) throws RuntimeException{
         String key = "partida:"+partidaId;
-        return redisService.getById(key, Partida.class);
+        return redisService.getByKey(key, Partida.class);
     }
 }
