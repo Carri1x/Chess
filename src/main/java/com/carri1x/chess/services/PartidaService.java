@@ -1,6 +1,5 @@
 package com.carri1x.chess.services;
 
-import com.carri1x.chess.RedisService;
 import com.carri1x.chess.enums.Colores;
 import com.carri1x.chess.exceptions.AjedrezException;
 import com.carri1x.chess.exceptions.ConvertirPiezaException;
@@ -14,7 +13,6 @@ import com.carri1x.chess.repositories.IPartidaRepository;
 import com.carri1x.chess.requests.AjedrezRequest;
 import com.carri1x.chess.requests.ConvertirRequest;
 import com.carri1x.chess.requests.CrearPartidaRequest;
-import org.springframework.aop.aspectj.AspectJAdviceParameterNameDiscoverer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

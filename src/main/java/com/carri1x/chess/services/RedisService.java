@@ -1,4 +1,4 @@
-package com.carri1x.chess;
+package com.carri1x.chess.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,7 @@ public class RedisService {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public <T> void save(String key, T objeto) {
         try {

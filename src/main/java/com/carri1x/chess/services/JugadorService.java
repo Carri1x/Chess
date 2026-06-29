@@ -1,6 +1,5 @@
 package com.carri1x.chess.services;
 
-import com.carri1x.chess.RedisService;
 import com.carri1x.chess.enums.Colores;
 import com.carri1x.chess.objetos.Jugador;
 import com.carri1x.chess.repositories.IJugadorRepository;

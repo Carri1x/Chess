@@ -1,5 +1,10 @@
 package com.carri1x.chess.responses;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Response {
     private Boolean suceso;
     private Integer status;
@@ -24,15 +29,4 @@ public class Response {
         this(suceso, status);
         this.mensaje = mensaje;
     }
-
-
-    public Boolean getSuceso() { return suceso; }
-    public void setSuceso(Boolean suceso) { this.suceso = suceso; }
-
-    public Integer getStatus() { return status; }
-    public void setStatus(Integer status) { this.status = status; }
-
-    public String getMensaje() { return mensaje; }
-    public void setMensaje(String mensaje) { this.mensaje = mensaje; }
-
 }

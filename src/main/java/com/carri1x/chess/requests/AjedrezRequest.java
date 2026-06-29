@@ -1,10 +1,14 @@
 package com.carri1x.chess.requests;
 
 import com.carri1x.chess.movimientos.Coordenadas;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
-public class AjedrezRequest extends Request{
+@Getter
+@Setter
+public class AjedrezRequest extends Request {
     private UUID piezaId;
 
     public AjedrezRequest() {
@@ -13,14 +17,6 @@ public class AjedrezRequest extends Request{
 
     public AjedrezRequest(UUID piezaId, Coordenadas coordenadas, UUID partidaId) {
         super(partidaId, coordenadas);
-        this.piezaId = piezaId;
-    }
-
-    public UUID getPiezaId() {
-        return piezaId;
-    }
-
-    public void setPiezaId(UUID piezaId) {
         this.piezaId = piezaId;
     }
 }

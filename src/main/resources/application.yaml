@@ -3,9 +3,9 @@ spring:
     name: chess
 
   datasource:
-    url: jdbc:postresql://localhost:5432/chess
-    username: postgres
-    password: passwordPortfolio
+    url: jdbc:postgresql://localhost:5432/chess
+    username: postgres_user
+    password: postgres_password
 
   jpa:
     hibernate:

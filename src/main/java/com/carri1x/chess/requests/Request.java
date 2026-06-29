@@ -1,17 +1,20 @@
 package com.carri1x.chess.requests;
 
 import com.carri1x.chess.movimientos.Coordenadas;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Getter
 public abstract class Request {
     private Optional<UUID> partidaId;
+    @Setter
     private Coordenadas coordenadas;
 
     public Request(UUID partidaId) {
-        Optional<UUID> id = partidaId != null ? Optional.of(partidaId) : Optional.empty();
-        this.partidaId = id;
+        this.partidaId = partidaId != null ? Optional.of(partidaId) : Optional.empty();
     }
 
     public Request(UUID partidaId, Coordenadas coordenadas) {
@@ -19,20 +22,7 @@ public abstract class Request {
         this.coordenadas = coordenadas;
     }
 
-    public Optional<UUID> getPartidaId() {
-        return partidaId;
-    }
-
     public void setPartidaId(UUID partidaId) {
-        Optional<UUID> id = partidaId != null ? Optional.of(partidaId) : Optional.empty();
-        this.partidaId = id;
-    }
-
-    public Coordenadas getCoordenadas() {
-        return coordenadas;
-    }
-
-    public void setCoordenadas(Coordenadas coordenadas) {
-        this.coordenadas = coordenadas;
+        this.partidaId = partidaId != null ? Optional.of(partidaId) : Optional.empty();
     }
 }
