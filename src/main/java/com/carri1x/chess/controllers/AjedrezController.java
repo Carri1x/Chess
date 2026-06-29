@@ -1,8 +1,10 @@
 package com.carri1x.chess.controllers;
 
+import com.carri1x.chess.enums.Colores;
 import com.carri1x.chess.enums.EstadoJuego;
 import com.carri1x.chess.exceptions.AjedrezException;
 import com.carri1x.chess.exceptions.ConvertirPiezaException;
+import com.carri1x.chess.objetos.Jugador;
 import com.carri1x.chess.objetos.Partida;
 import com.carri1x.chess.requests.AjedrezRequest;
 import com.carri1x.chess.requests.ConvertirRequest;
@@ -11,6 +13,7 @@ import com.carri1x.chess.responses.PartidaResponse;
 import com.carri1x.chess.responses.Response;
 import com.carri1x.chess.responses.TableroResponse;
 import com.carri1x.chess.services.PartidaService;
+import com.carri1x.chess.services.RedisService;
 
 import java.util.UUID;
 
@@ -24,6 +27,8 @@ public class AjedrezController {
 
     @Autowired
     PartidaService partidaService;
+    @Autowired
+    RedisService redisService; // Por ahora este servicio es para ver si redis está usandose bien en mi app.
 
     @PostMapping("/create")
     public ResponseEntity<Response> crear(@RequestBody CrearPartidaRequest crearPartidaRequest) {
@@ -68,6 +73,15 @@ public class AjedrezController {
         } catch (AjedrezException ex) {
             return ResponseEntity.ok(new Response(false, 400, ex.getMessage()));
         }
+    }
+
+    @GetMapping("/redis/jugador/{key}")
+    public ResponseEntity<?> getRedisJugador (@PathVariable String key) {
+        return ResponseEntity.ok(redisService.getByKey(key, Jugador.class).orElse( new Jugador("No encontrado", Colores.BLANCO)));
+    }
+    @GetMapping("/redis/partida/{key}")
+    public ResponseEntity<?> getRedisObjects (@PathVariable String key) {
+        return ResponseEntity.ok(redisService.getByKey(key, Partida.class).orElseThrow());
     }
 }
 
